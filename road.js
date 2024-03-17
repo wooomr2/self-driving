@@ -11,10 +11,10 @@ class Road {
     this.top = -infinity;
     this.bottom = infinity;
 
-    const topLeft = new Vector(this.left, this.top);
-    const topRight = new Vector(this.right, this.top);
-    const bottomLeft = new Vector(this.left, this.bottom);
-    const bottomRight = new Vector(this.right, this.bottom);
+    const topLeft = new Point(this.left, this.top);
+    const topRight = new Point(this.right, this.top);
+    const bottomLeft = new Point(this.left, this.bottom);
+    const bottomRight = new Point(this.right, this.bottom);
     this.borders = [
       [topLeft.coordinate, bottomLeft.coordinate],
       [topRight.coordinate, bottomRight.coordinate],
