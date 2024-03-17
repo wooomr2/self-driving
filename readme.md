@@ -12,7 +12,7 @@ JavaScript에서 화살표 함수(arrow function)와 일반 함수(function)의 
 - x축을 π/2(90도)만큼 회전한 단위원을 생각
 - 후진 시 flip 변수로 회전 방향을 반대로 toggle
 
-## getIntersection()
+## Segment Intersection
 
 - 네 개의 Point A, B, C, D를 입력 받아 두 선분 AB와 CD의 교점을 계산.
 
