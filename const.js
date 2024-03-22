@@ -6,6 +6,7 @@ const KEY_EVENT = {
 };
 
 const CONTROL_TYPE = {
+  AI: "AI",
   KEYS: "KEYS",
   DUMMY: "DUMMY",
 };

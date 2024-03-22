@@ -1,11 +1,12 @@
 class Sensor {
   constructor(car) {
     this.car = car;
-    this.rayCount = 3;
+    this.rayCount = 5;
     this.rayLength = 150;
     this.raySpread = Math.PI / 4;
 
     this.rays = [];
+    /** 판독값 */
     this.readings = [];
   }
 
@@ -66,7 +67,7 @@ class Sensor {
           poly[j],
           poly[(j + 1) % poly.length]
         );
-        
+
         if (value) {
           touches.push(value);
         }
