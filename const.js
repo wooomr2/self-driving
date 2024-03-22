@@ -18,4 +18,12 @@ const COLOR = {
   YELLOW: "yellow",
   BLUE: "blue",
   RED: "red",
+  ORANGE: "orange",
+};
+
+const RADIUS_RATIO = {
+  DEFAULT: 1,
+  INPUT: 0.6,
+  OUTPUT: 0.6,
+  BIAS: 0.8,
 };
