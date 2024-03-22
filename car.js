@@ -60,7 +60,7 @@ class Car {
   //   this.sensor.draw(ctx);
   // }
 
-  draw(ctx, color) {
+  draw(ctx, color, drawSensor = false) {
     if (this.damaged) {
       ctx.fillStyle = COLOR.GRAY;
     } else {
@@ -76,7 +76,7 @@ class Car {
 
     ctx.fill();
 
-    if (this.sensor) {
+    if (this.sensor && drawSensor) {
       this.sensor.draw(ctx);
     }
   }
