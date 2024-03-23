@@ -4,13 +4,15 @@ class Segment {
     this.p2 = p2;
   }
 
-  draw(ctx, width = 2, color = COLOR.BLACK) {
+  draw(ctx, { width = 2, color = COLOR.BLACK, dash = [] } = {}) {
     ctx.beginPath();
     ctx.lineWidth = width;
-    ctx.strokStyle = color;
+    ctx.strokeStyle = color;
+    ctx.setLineDash(dash);
     ctx.moveTo(this.p1.x, this.p1.y);
     ctx.lineTo(this.p2.x, this.p2.y);
     ctx.stroke();
+    ctx.setLineDash([]);
   }
 
   equals(seg) {
