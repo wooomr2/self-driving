@@ -1,8 +1,9 @@
 class GraphEditor {
-  constructor(canvas, graph) {
-    this.canvas = canvas;
+  constructor(viewport, graph) {
+    this.viewport = viewport;
     this.graph = graph;
 
+    this.canvas = viewport.canvas;
     this.ctx = this.canvas.getContext("2d");
 
     this.mouse = null;
@@ -22,8 +23,23 @@ class GraphEditor {
     this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
   }
 
+  #handleMouseMove(evt) {
+    this.mouse = this.viewport.getMouse(evt, true);
+
+    this.hovered = getNearestPoint(
+      this.mouse,
+      this.graph.points,
+      PRE_DEFINES.THRESHOLD * this.viewport.zoom
+    );
+
+    if (this.dragging) {
+      this.selected.x = this.mouse.x;
+      this.selected.y = this.mouse.y;
+    }
+  }
+
   #handleMouseDown(evt) {
-    if (evt.button == EVENT_BUTTON_TYPE.MOUSE_RIGHT_CLICK) {
+    if (evt.button == EVT_BTN_TYPE.MOUSE_RIGHT) {
       if (this.selected) {
         this.selected = null;
       } else if (this.hovered) {
@@ -31,7 +47,9 @@ class GraphEditor {
       }
     }
 
-    if (evt.button == EVENT_BUTTON_TYPE.MOUSE_LEFT_CLICK) {
+    // USE-ALT-KEY::
+    if (!evt.altKey && evt.button == EVT_BTN_TYPE.MOUSE_LEFT) {
+      // if (evt.button == EVT_BTN_TYPE.MOUSE_LEFT) {
       if (this.hovered) {
         this.#selectPoint(this.hovered);
         this.dragging = true;
@@ -41,21 +59,6 @@ class GraphEditor {
       this.graph.addPoint(this.mouse);
       this.#selectPoint(this.mouse);
       this.hovered = this.mouse;
-    }
-  }
-
-  #handleMouseMove(evt) {
-    this.mouse = new Point(evt.offsetX, evt.offsetY);
-
-    this.hovered = getNearestPoint(
-      this.mouse,
-      this.graph.points,
-      PREDEFINE.THRESHOLD
-    );
-
-    if (this.dragging) {
-      this.selected.x = this.mouse.x;
-      this.selected.y = this.mouse.y;
     }
   }
 
@@ -70,6 +73,12 @@ class GraphEditor {
       new Segment(this.selected, intent).draw(this.ctx, { dash: [3, 3] });
       this.selected.draw(this.ctx, { outline: true });
     }
+  }
+
+  dispose() {
+    this.graph.dispose();
+    this.selected = null;
+    this.hovered = null;
   }
 
   #selectPoint(point) {

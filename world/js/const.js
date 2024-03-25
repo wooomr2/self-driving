@@ -8,11 +8,17 @@ const COLOR = {
   ORANGE: "orange",
 };
 
-const EVENT_BUTTON_TYPE = {
-  MOUSE_LEFT_CLICK: 0,
-  MOUSE_RIGHT_CLICK: 2,
+const EVT_BTN_TYPE = {
+  MOUSE_LEFT: 0,
+  MOUSE_MIDDLE: 1,
+  MOUSE_RIGHT: 2,
 };
 
-const PREDEFINE = {
+const PRE_DEFINES = {
   THRESHOLD: 10,
+  MOUSE_WHEEL: {
+    STEP: 0.1,
+    ZOOM_MIN: 1,
+    ZOOM_MAX: 5,
+  },
 };

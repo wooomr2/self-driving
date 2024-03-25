@@ -15,15 +15,15 @@ class Segment {
     ctx.setLineDash([]);
   }
 
+  includes(point) {
+    return this.p1.equals(point) || this.p2.equals(point);
+  }
+
   equals(seg) {
     // return (
     //   (this.p1.equals(seg.p1) && this.p2.equals(seg.p2)) ||
     //   (this.p1.equals(seg.p2) && this.p2.equals(seg.p1))
     // );
     return this.includes(seg.p1) && this.includes(seg.p2);
-  }
-
-  includes(point) {
-    return this.p1.equals(point) || this.p2.equals(point);
   }
 }
