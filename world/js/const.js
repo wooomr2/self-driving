@@ -9,6 +9,7 @@ const COLOR = {
 
   LIGHT_GRAY: "#BBB",
   BLUE_OPACITY_30: "rgba(0, 0, 255, 0.3)",
+  BLACK_OPACITY_50: "rgba(0, 0, 0, 0.5)",
 };
 
 const EVT_BTN_TYPE = {

@@ -1,5 +1,5 @@
 class Envelope {
-  constructor(skeleton, width, roundness = 10) {
+  constructor(skeleton, width, roundness = 1) {
     this.skeleton = skeleton;
     this.poly = this.#generatePolygon(width, roundness);
   }

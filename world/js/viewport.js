@@ -64,7 +64,6 @@ class Viewport {
       PRE_DEFINES.MOUSE_WHEEL.ZOOM_MIN,
       Math.min(PRE_DEFINES.MOUSE_WHEEL.ZOOM_MAX, this.zoom)
     );
-    console.log(this.zoom);
   }
 
   reset() {
