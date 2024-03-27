@@ -33,4 +33,18 @@ const PRE_DEFINES = {
   TREE_HEIGHT: 200,
   BUILDING_BASE_HEIGHT: 200,
   BUILDING_ROOF_RATIO: 0.4,
+
+  FPS: 60,
+};
+
+const LIGHT_STATE = {
+  GREEN: "green",
+  YELLOW: "yellow",
+  RED: "red",
+  OFF: "off",
+};
+
+const LIGHT_DURATION = {
+  GREEN: 2,
+  YELLOW: 1,
 };

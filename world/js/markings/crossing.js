@@ -13,8 +13,8 @@ class Crossing extends Marking {
     );
     line.draw(ctx, { color: COLOR.WHITE, width: this.height, dash: [11, 11] });
 
-    // for (const b of this.borders) {
-    //   b.draw(ctx);
+    // for (const border of this.borders) {
+    //   border.draw(ctx);
     // }
   }
 }

@@ -24,6 +24,8 @@ class World {
 
     this.markings = [];
 
+    this.frameCount = 0;
+
     this.generate();
   }
 
@@ -187,6 +189,8 @@ class World {
   }
 
   draw(ctx, viewPoint) {
+    this.#updateLights();
+
     for (const env of this.envelopes) {
       env.draw(ctx, {
         fill: COLOR.LIGHT_GRAY,
@@ -221,5 +225,74 @@ class World {
     for (const seg of this.laneGuides) {
       seg.draw(ctx, { color: COLOR.RED });
     }
+  }
+
+  #updateLights() {
+    const lights = this.markings.filter((m) => m instanceof Light);
+    const controlCenters = [];
+    for (const light of lights) {
+      const point = getNearestPoint(light.center, this.#getIntersections());
+
+      let controlCenter = controlCenters.find((c) => c.equals(point));
+      if (!controlCenter) {
+        controlCenter = new Point(point.x, point.y);
+        controlCenter.lights = [light];
+        controlCenters.push(controlCenter);
+      } else {
+        controlCenter.lights.push(light);
+      }
+    }
+
+    for (const center of controlCenters) {
+      center.ticks =
+        center.lights.length * (LIGHT_DURATION.GREEN + LIGHT_DURATION.YELLOW);
+    }
+
+    const tick = Math.floor(this.frameCount / PRE_DEFINES.FPS);
+    for (const center of controlCenters) {
+      const cTick = tick % center.ticks;
+
+      const greenYellowIndex = Math.floor(
+        cTick / LIGHT_DURATION.GREEN + LIGHT_DURATION.YELLOW
+      );
+
+      const greenYellowState =
+        cTick % (LIGHT_DURATION.GREEN + LIGHT_DURATION.YELLOW) <
+        LIGHT_DURATION.GREEN
+          ? LIGHT_STATE.GREEN
+          : LIGHT_STATE.YELLOW;
+
+      for (let i = 0; i < center.lights.length; i++) {
+        if (i == greenYellowIndex) {
+          center.lights[i].state = greenYellowState;
+        } else {
+          center.lights[i].state = LIGHT_STATE.RED;
+        }
+      }
+    }
+
+    this.frameCount++;
+  }
+
+  /**
+   * 교차로에 있는 점들을 반환. 교차로에 있는 점 == segment가 3개 이상 만나는 점
+   * @returns {Point[]}
+   */
+  #getIntersections() {
+    const subset = [];
+    for (const point of this.graph.points) {
+      let degree = 0;
+      for (const seg of this.graph.segments) {
+        if (seg.includes(point)) {
+          degree++;
+        }
+      }
+
+      if (degree > 2) {
+        subset.push(point);
+      }
+    }
+
+    return subset;
   }
 }

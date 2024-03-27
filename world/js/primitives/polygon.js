@@ -99,6 +99,7 @@ class Polygon {
    * outerPoint:: 유저가 생성할 수 없는 임의의 한 점
    * 선분(outerPoint, point) 의 segments와의 교점이
    * 홀수 => polygon 내부 // 짝수 => polygon 외부 point
+   * @returns {boolean}
    */
   containsPoint(point) {
     const outerPoint = new Point(-1000, -1000);
