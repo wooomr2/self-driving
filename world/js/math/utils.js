@@ -97,3 +97,13 @@ function getRandomColor() {
 
   return `hsl(${hue},100%, 60%)`;
 }
+
+function getFake3dPoint(point, viewPoint, height) {
+  const dir = normalize(subtract(point, viewPoint));
+  const dist = distance(point, viewPoint);
+  // (-π/2 ~ π/2) -> (-1, 1)
+  // dist가 클수록 scaler가 1에 가까워짐
+  const scaler = Math.atan(dist / 300) / (Math.PI / 2);
+
+  return add(point, scale(dir, height * scaler));
+}

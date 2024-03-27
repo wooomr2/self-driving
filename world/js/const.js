@@ -7,6 +7,8 @@ const COLOR = {
   RED: "red",
   ORANGE: "orange",
   GREEN: "green",
+  DARK_ORANGE1: "#D44",
+  DARK_ORANGE2: "#C44",
 
   LIGHT_GRAY: "#BBB",
   BLUE_OPACITY_30: "rgba(0, 0, 255, 0.3)",
@@ -28,4 +30,7 @@ const PRE_DEFINES = {
     ZOOM_MIN: 1,
     ZOOM_MAX: 5,
   },
+  TREE_HEIGHT: 200,
+  BUILDING_BASE_HEIGHT: 200,
+  BUILDING_ROOF_RATIO: 0.4,
 };

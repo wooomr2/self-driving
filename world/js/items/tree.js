@@ -1,15 +1,25 @@
 class Tree {
-  constructor(center, size, heightCoef = 0.3) {
+  constructor(center, size, height = PRE_DEFINES.TREE_HEIGHT) {
     this.center = center;
     this.size = size; // size of the base
-    this.heightCoef = heightCoef;
+    this.height = height;
     this.base = this.#generateLevel(center, size);
   }
 
-  draw(ctx, viewPoint) {
-    const diff = subtract(this.center, viewPoint);
+  #generateLevel(point, size) {
+    const points = [];
+    const radius = size / 2;
+    for (let a = 0; a < Math.PI * 2; a += Math.PI / 16) {
+      const kindOfRandom = Math.cos(((a + this.center.x) * size) % 17) ** 2;
+      const noisyRadius = radius * lerp(0.55, 1, kindOfRandom);
+      points.push(translate(point, a, noisyRadius));
+    }
 
-    const top = add(this.center, scale(diff, this.heightCoef));
+    return new Polygon(points);
+  }
+
+  draw(ctx, viewPoint) {
+    const top = getFake3dPoint(this.center, viewPoint, this.height);
 
     const levelCount = 7;
     for (let level = 0; level < levelCount; level++) {
@@ -25,17 +35,5 @@ class Tree {
     this.base.draw(ctx);
 
     // new Segment(this.center, top).draw(ctx);
-  }
-
-  #generateLevel(point, size) {
-    const points = [];
-    const radius = size / 2;
-    for (let a = 0; a < Math.PI * 2; a += Math.PI / 16) {
-      const kindOfRandom = Math.cos(((a + this.center.x) * size) % 17) ** 2;
-      const noisyRadius = radius * lerp(0.55, 1, kindOfRandom);
-      points.push(translate(point, a, noisyRadius));
-    }
-
-    return new Polygon(points);
   }
 }
