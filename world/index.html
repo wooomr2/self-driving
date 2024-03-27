@@ -17,6 +17,8 @@
     <script src="js/world.js"></script>
     <script src="js/graphEditor.js"></script>
     <script src="js/viewPort.js"></script>
+    <script src="js/items/tree.js"></script>
+    <script src="js/items/building.js"></script>
     <script src="js/math/utils.js"></script>
     <script src="js/math/graph.js"></script>
     <script src="js/primitives/point.js"></script>
@@ -58,7 +60,12 @@
           world.generate();
           oldGraphHash = graph.hash();
         }
-        world.draw(ctx);
+
+        // (-1)만큼 offset을 scale:: 마우스 드래그 반대방향으로 viewport를 이동시키는 패닝 효과를 주기 위함
+        const viewPoint = scale(viewport.getOffset(), -1);
+
+        world.draw(ctx, viewPoint);
+
         ctx.globalAlpha = 0.3;
         graphEditor.display();
         requestAnimationFrame(animate);

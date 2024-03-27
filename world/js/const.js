@@ -6,10 +6,13 @@ const COLOR = {
   BLUE: "blue",
   RED: "red",
   ORANGE: "orange",
+  GREEN: "green",
 
   LIGHT_GRAY: "#BBB",
   BLUE_OPACITY_30: "rgba(0, 0, 255, 0.3)",
   BLACK_OPACITY_50: "rgba(0, 0, 0, 0.5)",
+
+  TRANSPARENT: "rgba(0,0,0,0)",
 };
 
 const EVT_BTN_TYPE = {

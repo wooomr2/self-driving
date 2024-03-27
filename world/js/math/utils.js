@@ -62,8 +62,12 @@ function angle(p) {
 }
 
 // TODO:: util-function 통합하기
-function lerp(A, B, t) {
-  return A + (B - A) * t;
+function lerp(a, b, t) {
+  return a + (b - a) * t;
+}
+
+function lerp2D(A, B, t) {
+  return new Point(lerp(A.x, B.x, t), lerp(A.y, B.y, t));
 }
 
 function getIntersection(A, B, C, D) {
