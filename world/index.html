@@ -20,8 +20,10 @@
     <script src="js/const.js"></script>
     <script src="js/world.js"></script>
     <script src="js/viewPort.js"></script>
+    <script src="js/markings/marking.js"></script>
     <script src="js/markings/stop.js"></script>
     <script src="js/markings/crossing.js"></script>
+    <script src="js/editors/markingEditor.js"></script>
     <script src="js/editors/graphEditor.js"></script>
     <script src="js/editors/stopEditor.js"></script>
     <script src="js/editors/crossingEditor.js"></script>
@@ -58,9 +60,11 @@
       const world = new World(graph);
       const viewport = new Viewport(myCanvas);
 
-      const graphEditor = new GraphEditor(viewport, graph);
-      const stopEditor = new StopEditor(viewport, world);
-      const crossingEditor = new CrossingEditor(viewport, world);
+      const tools = {
+        graph: { button: graphBtn, editor: new GraphEditor(viewport, graph) },
+        stop: { button: stopBtn, editor: new StopEditor(viewport, world) },
+        crossing: {button: crossingBtn, editor: new CrossingEditor(viewport, world) },
+      };
 
       let oldGraphHash = graph.hash();
 
@@ -81,15 +85,15 @@
 
         ctx.globalAlpha = 0.3;
 
-        graphEditor.display();
-        stopEditor.display();
-        crossingEditor.display();
+        for (const tool of Object.values(tools)) {
+          tool.editor.display();
+        }
 
         requestAnimationFrame(animate);
       }
 
       function dispose() {
-        graphEditor.dispose();
+        tools["graph"].editor.dispose();
         world.markings.length = 0;
         localStorage.clear();
       }
@@ -101,35 +105,18 @@
       function setMode(mode) {
         console.log(`setMode: ${mode}`);
         disableEditors();
-        switch (mode) {
-          case "graph":
-            graphBtn.style.background = COLOR.WHITE;
-            graphBtn.style.filter = "";
-            graphEditor.enable();
-            break;
-          case "stop":
-            stopBtn.style.background = COLOR.WHITE;
-            stopBtn.style.filter = "";
-            stopEditor.enable();
-            break;
-          case "crossing":
-            crossingBtn.style.background = COLOR.WHITE;
-            crossingBtn.style.filter = "";
-            crossingEditor.enable();
-            break;
-        }
+
+        tools[mode].button.style.background = COLOR.WHITE;
+        tools[mode].button.style.filter = "";
+        tools[mode].editor.enable();
       }
 
       function disableEditors() {
-        graphBtn.style.background = COLOR.GRAY;
-        graphBtn.style.filter = "grayscale(100%)";
-        graphEditor.disable();
-        stopBtn.style.background = COLOR.GRAY;
-        stopBtn.style.filter = "grayscale(100%)";
-        stopEditor.disable();
-        crossingBtn.style.background = COLOR.GRAY;
-        crossingBtn.style.filter = "grayscale(100%)";
-        crossingEditor.disable();
+        for (const tool of Object.values(tools)) {
+          tool.button.style.background = COLOR.GRAY;
+          tool.button.style.filter = "grayscale(100%)";
+          tool.editor.disable();
+        }
       }
     </script>
   </body>
