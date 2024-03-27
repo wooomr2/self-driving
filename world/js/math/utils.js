@@ -64,6 +64,12 @@ function magnitude(p) {
   return Math.hypot(p.x, p.y);
 }
 
+// (1, 2) => (-2, 1)
+/** 수직선 */
+function perpendicular(p) {
+  return new Point(-p.y, p.x);
+}
+
 /** 위치 변환 */
 function translate(loc, angle, offset) {
   return new Point(
