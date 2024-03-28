@@ -2,6 +2,8 @@ class Crossing extends Marking {
   constructor(center, directionVector, width, height) {
     super(center, directionVector, width, height);
 
+    this.type = MARKING_TYPE.CROSSING;
+
     this.borders = [this.poly.segments[0], this.poly.segments[2]];
   }
 

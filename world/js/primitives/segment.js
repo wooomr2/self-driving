@@ -4,6 +4,7 @@ class Segment {
     this.p2 = p2;
   }
 
+  /** (0,0) 기준 normalized된 위치벡터 */
   directionVector() {
     return normalize(subtract(this.p2, this.p1));
   }

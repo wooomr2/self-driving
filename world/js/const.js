@@ -1,3 +1,14 @@
+const MARKING_TYPE = {
+  MARKING: "marking",
+  CROSSING: "crossing",
+  LIGHT: "light",
+  PARKING: "parking",
+  START: "start",
+  STOP: "stop",
+  TARGET: "target",
+  YIELD: "yield",
+};
+
 const COLOR = {
   WHITE: "white",
   GRAY: "gray",
