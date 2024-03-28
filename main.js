@@ -1,16 +1,22 @@
 const carCanvas = document.getElementById("carCanvas");
-carCanvas.width = 200;
+carCanvas.width = window.innerWidth - 330;
 
 const networkCanvas = document.getElementById("networkCanvas");
 networkCanvas.width = 300;
 
+// carCanvas.height = window.innerHeight;
+// networkCanvas.height = window.innerHeight;
+
 const carCtx = carCanvas.getContext("2d");
 const networkCtx = networkCanvas.getContext("2d");
 
-const road = new Road(carCanvas.width / 2, carCanvas.width * 0.9);
+const worldStr = localStorage.getItem("world");
+const worldInfo = worldStr ? JSON.parse(worldStr) : null;
+const world = worldInfo ? World.load(worldInfo) : new World(new Graph());
 
-const N = 100;
-const cars = generateCars(N);
+const viewport = new Viewport(carCanvas, world.zoom, world.offset);
+
+const cars = generateCars(NUM_OF_CARS);
 let bestCar = cars[0];
 if (localStorage.getItem("bestBrain")) {
   for (let i = 0; i < cars.length; i++) {
@@ -21,15 +27,13 @@ if (localStorage.getItem("bestBrain")) {
   }
 }
 
-const traffic = [
-  new Car(road.getLaneCenter(1), -100, 30, 50, CONTROL_TYPE.DUMMY, 2, getRandomColor()),
-  new Car(road.getLaneCenter(0), -300, 30, 50, CONTROL_TYPE.DUMMY, 2, getRandomColor()),
-  new Car(road.getLaneCenter(2), -300, 30, 50, CONTROL_TYPE.DUMMY, 2, getRandomColor()),
-  new Car(road.getLaneCenter(0), -500, 30, 50, CONTROL_TYPE.DUMMY, 2, getRandomColor()),
-  new Car(road.getLaneCenter(1), -500, 30, 50, CONTROL_TYPE.DUMMY, 2, getRandomColor()),
-  new Car(road.getLaneCenter(1), -700, 30, 50, CONTROL_TYPE.DUMMY, 2, getRandomColor()),
-  new Car(road.getLaneCenter(2), -700, 30, 50, CONTROL_TYPE.DUMMY, 2, getRandomColor()),
-];
+const traffic = [];
+const roadBorders = world.roadBorders.map((s) => [s.p1, s.p2]);
+
+// const roadBorders = world.buildings
+//   .map((b) => b.base.segments)
+//   .flat()
+//   .map((s) => [s.p1, s.p2]);
 
 animate();
 
@@ -42,9 +46,25 @@ function discard() {
 }
 
 function generateCars(N) {
+  const startPoints = world.markings.filter((m) => m instanceof Start);
+  const startPoint =
+    startPoints.length > 0 ? startPoints[0].center : new Point(100, 100);
+
+  const directionVector =
+    startPoints.length > 0 ? startPoints[0].directionVector : new Point(0, -1);
+
+  // 축 방향                         x
+  // world Editor ---- x   Car    \a|
+  //              |\ a             \|  // 실제로는 각(a)이 서로 같음
+  //              | \         y -----
+  //              y
+  const startAngle = -angle(directionVector) + Math.PI / 2;
+
   const cars = [];
   for (let i = 1; i <= N; i++) {
-    cars.push(new Car(road.getLaneCenter(1), 100, 30, 50, CONTROL_TYPE.AI));
+    cars.push(
+      new Car(startPoint.x, startPoint.y, 30, 50, CONTROL_TYPE.AI, startAngle)
+    );
   }
 
   return cars;
@@ -52,40 +72,40 @@ function generateCars(N) {
 
 function animate(time) {
   for (let i = 0; i < traffic.length; i++) {
-    traffic[i].update(road.borders, []);
+    traffic[i].update(roadBorders, []);
   }
 
   for (let i = 0; i < cars.length; i++) {
-    cars[i].update(road.borders, traffic);
+    cars[i].update(roadBorders, traffic);
   }
 
-  /** Fintess Function */
-  bestCar = cars.find((c) => c.y == Math.min(...cars.map((c) => c.y)));
+  bestCar = cars.find(
+    (c) => c.fitness == Math.max(...cars.map((c) => c.fitness))
+  );
+
+  world.cars = cars;
+  world.bestCar = bestCar;
 
   carCanvas.height = window.innerHeight;
   networkCanvas.height = window.innerHeight;
 
+  viewport.offset.x = -bestCar.x;
+  viewport.offset.y = -bestCar.y;
+
+  viewport.reset();
+  // (-1)만큼 offset을 scale:: 마우스 드래그 반대방향으로 viewport를 이동시키는 패닝 효과를 주기 위함
+  const viewPoint = scale(viewport.getOffset(), -1);
+  world.draw(carCtx, viewPoint, false);
+
   carCtx.save();
 
-  // 원점을 y축 방향으로 이동
-  // car 객체가 항상 캔버스의 아래쪽 70% 위치에 그려짐.
-  carCtx.translate(0, -bestCar.y + carCanvas.height * 0.7);
-
-  road.draw(carCtx);
   for (let i = 0; i < traffic.length; i++) {
     traffic[i].draw(carCtx, COLOR.RED);
   }
 
-  carCtx.globalAlpha = 0.2;
-  for (let i = 0; i < cars.length; i++) {
-    cars[i].draw(carCtx);
-  }
-  carCtx.globalAlpha = 1;
-  bestCar.draw(carCtx, true);
-
-  carCtx.restore();
-
   networkCtx.lineDashOffset = time / 50;
+  networkCtx.clearRect(0, 0, networkCanvas.width, networkCanvas.height);
+
   Visualizer.drawNetwork(networkCtx, bestCar.brain);
   requestAnimationFrame(animate);
 }

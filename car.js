@@ -5,6 +5,7 @@ class Car {
     width,
     height,
     controlType,
+    angle = 0,
     maxSpeed = 3,
     color = COLOR.BLUE
   ) {
@@ -18,8 +19,10 @@ class Car {
     this.maxSpeed = maxSpeed;
     this.friction = 0.05;
 
-    this.angle = 0;
+    this.angle = angle;
     this.damaged = false;
+
+    this.fitness = 0;
 
     this.useBrain = controlType == CONTROL_TYPE.AI;
 
@@ -51,6 +54,7 @@ class Car {
   update(roadBorders, traffic) {
     if (!this.damaged) {
       this.#move();
+      this.fitness += this.speed;
       this.polygon = this.#createPolygon();
       this.damaged = this.#assessDamage(roadBorders, traffic);
     }

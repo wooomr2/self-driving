@@ -4,6 +4,14 @@ class Point {
     this.y = y;
   }
 
+  get coordinate() {
+    return { x: this.x, y: this.y };
+  }
+
+  equals(point) {
+    return this.x == point.x && this.y == point.y;
+  }
+
   draw(
     ctx,
     { size = 18, color = COLOR.BLACK, outline = false, fill = false } = {}
@@ -28,9 +36,5 @@ class Point {
       ctx.fillStyle = COLOR.YELLOW;
       ctx.fill();
     }
-  }
-
-  equals(point) {
-    return this.x == point.x && this.y == point.y;
   }
 }

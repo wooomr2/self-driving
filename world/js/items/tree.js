@@ -32,7 +32,7 @@ class Tree {
       poly.draw(ctx, { fill: color, stroke: COLOR.TRANSPARENT });
       //   point.draw(ctx, { size: size, color: color });
     }
-    this.base.draw(ctx);
+    // this.base.draw(ctx);
 
     // new Segment(this.center, top).draw(ctx);
   }

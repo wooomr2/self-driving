@@ -1,9 +1,4 @@
-const KEY_EVENT = {
-  ARROW_LEFT: "ArrowLeft",
-  ARROW_RIGHT: "ArrowRight",
-  ARROW_UP: "ArrowUp",
-  ARROW_DOWN: "ArrowDown",
-};
+const NUM_OF_CARS = 100;
 
 const CONTROL_TYPE = {
   AI: "AI",
@@ -11,14 +6,11 @@ const CONTROL_TYPE = {
   DUMMY: "DUMMY",
 };
 
-const COLOR = {
-  WHITE: "white",
-  GRAY: "gray",
-  BLACK: "black",
-  YELLOW: "yellow",
-  BLUE: "blue",
-  RED: "red",
-  ORANGE: "orange",
+const KEY_EVENT = {
+  ARROW_LEFT: "ArrowLeft",
+  ARROW_RIGHT: "ArrowRight",
+  ARROW_UP: "ArrowUp",
+  ARROW_DOWN: "ArrowDown",
 };
 
 const RADIUS_RATIO = {
