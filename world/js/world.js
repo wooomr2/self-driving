@@ -213,56 +213,6 @@ class World {
     return bases.map((b) => new Building(b));
   }
 
-  draw(ctx, viewPoint, showStartMarkings = true) {
-    this.#updateLights();
-
-    for (const env of this.envelopes) {
-      env.draw(ctx, {
-        fill: COLOR.LIGHT_GRAY,
-        stroke: COLOR.LIGHT_GRAY,
-        lineWidth: 15,
-      });
-    }
-
-    for (const marking of this.markings) {
-      if (!(marking instanceof Start) || showStartMarkings) {
-        marking.draw(ctx);
-      }
-    }
-
-    for (const seg of this.graph.segments) {
-      seg.draw(ctx, { color: COLOR.WHITE, width: 4, dash: [10, 10] });
-    }
-
-    for (const seg of this.roadBorders) {
-      seg.draw(ctx, { color: COLOR.WHITE, width: 4 });
-    }
-
-    ctx.globalAlpha = 0.2;
-    for (const car of this.cars) {
-      car.draw(ctx);
-    }
-    ctx.globalAlpha = 1;
-    if (this.bestCar) {
-      this.bestCar.draw(ctx, true);
-    }
-
-    const items = [...this.buildings, ...this.trees];
-
-    items.sort(
-      (a, b) =>
-        b.base.distanceToPoint(viewPoint) - a.base.distanceToPoint(viewPoint)
-    );
-
-    for (const item of items) {
-      item.draw(ctx, viewPoint);
-    }
-
-    for (const seg of this.laneGuides) {
-      seg.draw(ctx, { color: COLOR.RED });
-    }
-  }
-
   #updateLights() {
     const lights = this.markings.filter((m) => m instanceof Light);
     const controlCenters = [];
@@ -330,5 +280,62 @@ class World {
     }
 
     return subset;
+  }
+
+  draw(
+    ctx,
+    viewPoint,
+    showStartMarkings = true,
+    renderRadius = PRE_DEFINES.RENDER_RADIUS
+  ) {
+    this.#updateLights();
+
+    for (const env of this.envelopes) {
+      env.draw(ctx, {
+        fill: COLOR.LIGHT_GRAY,
+        stroke: COLOR.LIGHT_GRAY,
+        lineWidth: 15,
+      });
+    }
+
+    for (const marking of this.markings) {
+      if (!(marking instanceof Start) || showStartMarkings) {
+        marking.draw(ctx);
+      }
+    }
+
+    for (const seg of this.graph.segments) {
+      seg.draw(ctx, { color: COLOR.WHITE, width: 4, dash: [10, 10] });
+    }
+
+    for (const seg of this.roadBorders) {
+      seg.draw(ctx, { color: COLOR.WHITE, width: 4 });
+    }
+
+    ctx.globalAlpha = 0.2;
+    for (const car of this.cars) {
+      car.draw(ctx);
+    }
+    ctx.globalAlpha = 1;
+    if (this.bestCar) {
+      this.bestCar.draw(ctx, true);
+    }
+
+    const items = [...this.buildings, ...this.trees].filter(
+      (i) => i.base.distanceToPoint(viewPoint) < renderRadius
+    );
+
+    items.sort(
+      (a, b) =>
+        b.base.distanceToPoint(viewPoint) - a.base.distanceToPoint(viewPoint)
+    );
+
+    for (const item of items) {
+      item.draw(ctx, viewPoint);
+    }
+
+    // for (const seg of this.laneGuides) {
+    //   seg.draw(ctx, { color: COLOR.RED });
+    // }
   }
 }

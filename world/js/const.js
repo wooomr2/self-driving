@@ -46,6 +46,7 @@ const PRE_DEFINES = {
   BUILDING_ROOF_RATIO: 0.4,
 
   FPS: 60,
+  RENDER_RADIUS: 1000,
 };
 
 const LIGHT_STATE = {

@@ -91,6 +91,17 @@ function lerp2D(A, B, t) {
   return new Point(lerp(A.x, B.x, t), lerp(A.y, B.y, t));
 }
 
+/** 두 알려진 값 a와 b가 주어지고,
+ *  a와 b 사이에 있는 값 v가 주어졌을 때,
+ *  v가 a에서 b까지의 범위에서 어디에 위치하는지 비율 추정 */
+function invLerp(a, b, v) {
+  return (v - a) / (b - a);
+}
+
+function degToRad(degree) {
+  return degree * (Math.PI / 180);
+}
+
 function getIntersection(A, B, C, D) {
   const tTop = (D.x - C.x) * (A.y - C.y) - (D.y - C.y) * (A.x - C.x);
   const uTop = (C.y - A.y) * (A.x - B.x) - (C.x - A.x) * (A.y - B.y);

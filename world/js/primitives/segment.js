@@ -1,7 +1,8 @@
 class Segment {
-  constructor(p1, p2) {
+  constructor(p1, p2, oneWay = false) {
     this.p1 = p1;
     this.p2 = p2;
+    this.oneWay = oneWay;
   }
 
   /** (0,0) 기준 normalized된 위치벡터 */
@@ -56,6 +57,9 @@ class Segment {
     ctx.beginPath();
     ctx.lineWidth = width;
     ctx.strokeStyle = color;
+    if (this.oneWay) {
+      dash = [4, 4];
+    }
     ctx.setLineDash(dash);
     ctx.moveTo(this.p1.x, this.p1.y);
     ctx.lineTo(this.p2.x, this.p2.y);

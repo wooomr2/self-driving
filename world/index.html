@@ -20,6 +20,7 @@
           onchange="load(event)"
         />
       </label>
+      <button onclick="openOsmPanel()">🗺️</button>
       &nbsp;
       <button id="graphBtn" onclick="setMode('graph')">🌐</button>
       <button id="stopBtn" onclick="setMode('stop')">🛑</button>
@@ -30,6 +31,20 @@
       <button id="parkingBtn" onclick="setMode('parking')">🅿️</button>
       <button id="targetBtn" onclick="setMode('target')">🎯</button>
       <button id="lightBtn" onclick="setMode('light')">🚦</button>
+
+      <!-- OSM- MODAL -->
+      <div id="osmPanel" style="display: none">
+        <textarea
+          id="osmDataContainer"
+          rows="10"
+          cols="50"
+          placeholder="Paste OSM data here"
+        ></textarea>
+        <div>
+          <button onclick="parseOsmData()">✔️</button>
+          <button onclick="closeOsmPanel()">❌</button>
+        </div>
+      </div>
     </div>
 
     <script src="js/const.js"></script>
@@ -56,6 +71,7 @@
     <script src="js/items/building.js"></script>
     <script src="js/math/utils.js"></script>
     <script src="js/math/graph.js"></script>
+    <script src="js/math/osm.js"></script>
     <script src="js/primitives/point.js"></script>
     <script src="js/primitives/segment.js"></script>
     <script src="js/primitives/polygon.js"></script>
@@ -179,6 +195,28 @@
           tool.button.style.filter = "grayscale(100%)";
           tool.editor.disable();
         }
+      }
+
+      function openOsmPanel() {
+        osmPanel.style.display = "block";
+      }
+
+      function closeOsmPanel() {
+        osmPanel.style.display = "none";
+      }
+
+      function parseOsmData() {
+        if (osmDataContainer.value == "") {
+          return alert("Paste data first");
+        }
+        const { points, segments } = Osm.parseRoads(
+          JSON.parse(osmDataContainer.value)
+        );
+
+        graph.points = points;
+        graph.segments = segments;
+
+        closeOsmPanel();
       }
     </script>
   </body>
