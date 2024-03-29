@@ -17,20 +17,6 @@ const Osm = {
     const deltaLon = maxLon - minLon;
     const aspectRatio = deltaLon / deltaLat;
 
-    // 구면좌표계(Spherical Coordinate) 생각하십쇼
-    // (x,y,z) (ρ, φ, θ) (0≤r, 0≤𝜑<2π, 0≤θ≤π)
-    // x = rsin(θ)cos(φ)
-    // y = rsin(θ)sin(φ)
-    // z = rcos(θ)
-    //
-    // r: 지구 반지름
-    // 위도(Latitude): 지구의 중점에서 좌표까지의 각도(π/2- φ)
-    // 경도(Longitude): θ
-
-    // 1° of latitude ≈ 111km ≈ 111000m
-
-    // 미터단위로 설정할 경우, 도로 너비(default 100px)로 설정되어 있으므로 도로가 100m가 됨
-    // 다시 10배 scale-up해서 도로폭을 10m 로 설정
     const height = deltaLat * 111000 * 10;
     const width = height * aspectRatio * Math.cos(degToRad(maxLat));
 
@@ -54,7 +40,6 @@ const Osm = {
         segments.push(new Segment(prev, cur, oneWay));
       }
     }
-    console.log(ways);
 
     return { points, segments };
   },

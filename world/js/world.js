@@ -321,6 +321,7 @@ class World {
       this.bestCar.draw(ctx, true);
     }
 
+    // renderRadius 반경 내에 있는 item들만 draw한다.
     const items = [...this.buildings, ...this.trees].filter(
       (i) => i.base.distanceToPoint(viewPoint) < renderRadius
     );
