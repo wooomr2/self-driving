@@ -7,6 +7,7 @@ class Crossing extends Marking {
     this.borders = [this.poly.segments[0], this.poly.segments[2]];
   }
 
+  /** @override */
   draw(ctx) {
     const perp = perpendicular(this.directionVector);
     const line = new Segment(

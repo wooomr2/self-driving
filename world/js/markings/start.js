@@ -8,6 +8,7 @@ class Start extends Marking {
     this.img.src = "car.png";
   }
 
+  /** @override */
   draw(ctx) {
     ctx.save();
 

@@ -8,6 +8,7 @@ class Light extends Marking {
     this.border = this.poly.segments[0];
   }
 
+  /** @override */
   draw(ctx) {
     const perp = perpendicular(this.directionVector);
     const line = new Segment(

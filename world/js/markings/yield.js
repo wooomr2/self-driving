@@ -7,6 +7,7 @@ class Yield extends Marking {
     this.border = this.poly.segments[2];
   }
 
+  /** @override */
   draw(ctx) {
     this.border.draw(ctx, { color: COLOR.WHITE, width: 5 });
 

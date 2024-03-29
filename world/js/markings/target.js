@@ -5,6 +5,7 @@ class Target extends Marking {
     this.type = MARKING_TYPE.STOP;
   }
 
+  /** @override */
   draw(ctx) {
     this.center.draw(ctx, { color: COLOR.RED, size: 30 });
     this.center.draw(ctx, { color: COLOR.WHITE, size: 20 });

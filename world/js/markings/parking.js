@@ -7,6 +7,7 @@ class Parking extends Marking {
     this.borders = [this.poly.segments[0], this.poly.segments[2]];
   }
 
+  /** @override */
   draw(ctx) {
     for (const border of this.borders) {
       border.draw(ctx, { color: COLOR.WHITE, width: 5 });

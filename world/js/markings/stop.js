@@ -7,6 +7,7 @@ class Stop extends Marking {
     this.border = this.poly.segments[2];
   }
 
+  /** @override */
   draw(ctx) {
     // this.support.draw(ctx);
     // this.poly.draw(ctx);
