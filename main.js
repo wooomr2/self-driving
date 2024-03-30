@@ -4,8 +4,12 @@ carCanvas.width = window.innerWidth - 330;
 const networkCanvas = document.getElementById("networkCanvas");
 networkCanvas.width = 300;
 
+const miniMapCanvas = document.getElementById("miniMapCanvas");
+miniMapCanvas.width = 300;
+miniMapCanvas.height = 300;
+
 carCanvas.height = window.innerHeight;
-networkCanvas.height = window.innerHeight;
+networkCanvas.height = window.innerHeight - 300;
 
 const carCtx = carCanvas.getContext("2d");
 const networkCtx = networkCanvas.getContext("2d");
@@ -15,6 +19,7 @@ const worldInfo = worldStr ? JSON.parse(worldStr) : null;
 const world = worldInfo ? World.load(worldInfo) : new World(new Graph());
 
 const viewport = new Viewport(carCanvas, world.zoom, world.offset);
+const miniMap = new MiniMap(miniMapCanvas, world.graph, 300);
 
 const cars = generateCars(NUM_OF_CARS);
 let bestCar = cars[0];
@@ -87,7 +92,9 @@ function animate(time) {
   viewport.reset();
   // (-1)만큼 offset을 scale:: 마우스 드래그 반대방향으로 viewport를 이동시키는 패닝 효과를 주기 위함
   const viewPoint = scale(viewport.getOffset(), -1);
+
   world.draw(carCtx, viewPoint, false);
+  miniMap.update(viewPoint);
 
   for (let i = 0; i < traffic.length; i++) {
     traffic[i].draw(carCtx, COLOR.RED);
