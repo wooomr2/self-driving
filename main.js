@@ -4,8 +4,8 @@ carCanvas.width = window.innerWidth - 330;
 const networkCanvas = document.getElementById("networkCanvas");
 networkCanvas.width = 300;
 
-// carCanvas.height = window.innerHeight;
-// networkCanvas.height = window.innerHeight;
+carCanvas.height = window.innerHeight;
+networkCanvas.height = window.innerHeight;
 
 const carCtx = carCanvas.getContext("2d");
 const networkCtx = networkCanvas.getContext("2d");
@@ -29,11 +29,6 @@ if (localStorage.getItem("bestBrain")) {
 
 const traffic = [];
 const roadBorders = world.roadBorders.map((s) => [s.p1, s.p2]);
-
-// const roadBorders = world.buildings
-//   .map((b) => b.base.segments)
-//   .flat()
-//   .map((s) => [s.p1, s.p2]);
 
 animate();
 
@@ -86,9 +81,6 @@ function animate(time) {
   world.cars = cars;
   world.bestCar = bestCar;
 
-  carCanvas.height = window.innerHeight;
-  networkCanvas.height = window.innerHeight;
-
   viewport.offset.x = -bestCar.x;
   viewport.offset.y = -bestCar.y;
 
@@ -97,13 +89,11 @@ function animate(time) {
   const viewPoint = scale(viewport.getOffset(), -1);
   world.draw(carCtx, viewPoint, false);
 
-  carCtx.save();
-
   for (let i = 0; i < traffic.length; i++) {
     traffic[i].draw(carCtx, COLOR.RED);
   }
 
-  networkCtx.lineDashOffset = time / 50;
+  networkCtx.lineDashOffset = -time / 50;
   networkCtx.clearRect(0, 0, networkCanvas.width, networkCanvas.height);
 
   Visualizer.drawNetwork(networkCtx, bestCar.brain);
