@@ -45,7 +45,7 @@ class Visualizer {
         ctx.beginPath();
         ctx.moveTo(xi, bottom);
         ctx.lineTo(xj, top);
-        ctx.lineWith = 2;
+        ctx.lineWidth = 2;
         ctx.strokeStyle = getRGBA(weights[i][j]);
         ctx.stroke();
       }
