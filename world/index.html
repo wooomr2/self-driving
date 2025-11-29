@@ -124,6 +124,7 @@
       function animate() {
         viewport.reset();
         if (graph.hash() != oldGraphHash) {
+          // :: world 다시그리고싶으면 주석 풀기
           // world.generate();
           oldGraphHash = graph.hash();
         }
