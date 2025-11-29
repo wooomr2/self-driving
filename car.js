@@ -51,6 +51,17 @@ class Car {
     };
   }
 
+  load(info) {
+    this.brain = info.brain;
+    this.maxSpeed = info.maxSpeed;
+    this.friction = info.friction;
+    this.acceleration = info.acceleration;
+    this.sensor.rayCount = info.sensor.rayCount;
+    this.sensor.raySpead = info.sensor.raySpead;
+    this.sensor.rayLength = info.sensor.rayLength;
+    this.sensor.rayOffset = info.sensor.rayOffset;
+  }
+
   update(roadBorders, traffic) {
     if (!this.damaged) {
       this.#move();
@@ -58,11 +69,12 @@ class Car {
       this.polygon = this.#createPolygon();
       this.damaged = this.#assessDamage(roadBorders, traffic);
     }
+
     if (this.sensor) {
       this.sensor.update(roadBorders, traffic);
-      const offsets = this.sensor.readings.map((s) =>
-        s == null ? 0 : 1 - s.offset
-      );
+      const offsets = this.sensor.readings
+        .map((s) => (s == null ? 0 : 1 - s.offset))
+        .concat([this.speed / this.maxSpeed]);
       const outputs = NeuralNetwork.feedForward(offsets, this.brain);
 
       if (this.useBrain) {

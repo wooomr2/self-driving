@@ -62,10 +62,18 @@ function generateCars(N) {
 
   const cars = [];
   for (let i = 1; i <= N; i++) {
-    cars.push(
-      new Car(startPoint.x, startPoint.y, 30, 50, CONTROL_TYPE.AI, startAngle)
+    const car = new Car(
+      startPoint.x,
+      startPoint.y,
+      30,
+      50,
+      CONTROL_TYPE.AI,
+      startAngle
     );
+    car.load(carInfo);
+    cars.push(car);
   }
+  console.log(cars);
 
   return cars;
 }
