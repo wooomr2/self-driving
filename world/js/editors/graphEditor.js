@@ -44,6 +44,9 @@ class GraphEditor {
         if (evt.key == "e") {
           this.end = this.hovered;
         }
+        if (this.start && this.end) {
+          world.generateCorridor(this.start, this.end);
+        }
       }
     });
   }
@@ -99,23 +102,23 @@ class GraphEditor {
     if (this.hovered) {
       this.hovered.draw(this.ctx, { fill: true });
     }
-
+    
     if (this.selected) {
       const intent = this.hovered ?? this.mouse;
       new Segment(this.selected, intent).draw(this.ctx, { dash: [3, 3] });
       this.selected.draw(this.ctx, { outline: true });
     }
 
-    if (this.start && this.end) {
-      const path = this.graph.getShortestPath(this.start, this.end);
+    // if (this.start && this.end) {
+    //   const path = this.graph.getShortestPath(this.start, this.end);
 
-      for (const point of path) {
-        point.draw(this.ctx, { size: 50, color: "blue" });
-        if (point.prev) {
-          new Segment(point, point.prev).draw(this.ctx, { width: 20 });
-        }
-      }
-    }
+    //   for (const point of path) {
+    //     point.draw(this.ctx, { size: 50, color: "blue" });
+    //     if (point.prev) {
+    //       new Segment(point, point.prev).draw(this.ctx, { width: 20 });
+    //     }
+    //   }
+    // }
   }
 
   dispose() {
