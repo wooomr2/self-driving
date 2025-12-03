@@ -1,19 +1,12 @@
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8" />
-  <title>Self-driving car - No libraries</title>
+  <title>Self-driving car - Race</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <canvas id="carCanvas"></canvas>
-  <div id="verticalButtons">
-    <button onclick="save()">💾</button>
-    <button onclick="discard()">🗑️</button>
-  </div>
-  <div>
-    <canvas id="networkCanvas"></canvas>
-    <canvas id="miniMapCanvas"></canvas>
-  </div>
+  <canvas id="miniMapCanvas" class="miniMap"></canvas>
 
   <script src="world/js/const.js"></script>
   <script src="world/js/world.js"></script>
@@ -57,5 +50,5 @@
   <script src="sensor.js"></script>
   <script src="controls.js"></script>
   <script src="car.js"></script>
-  <script src="main.js"></script>
+  <script src="race.js"></script>
 </body>

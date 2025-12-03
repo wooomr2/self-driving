@@ -34,3 +34,11 @@ button:hover {
 #miniMapCanvas {
   background: black;
 }
+
+.miniMap {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  border-radius: 50%;
+  opacity: 0.5;
+} 

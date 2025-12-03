@@ -87,7 +87,7 @@ class Car {
   }
 
   draw(ctx, drawSensor = false) {
-    if (this.sensor && drawSensor) {
+    if (this.sensor && drawSensor && this.useBrain) {
       this.sensor.draw(ctx);
     }
 
