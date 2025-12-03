@@ -1,15 +1,20 @@
+const RIGHT_PANEL_WIDTH = 300;
+
 const carCanvas = document.getElementById("carCanvas");
 carCanvas.width = window.innerWidth;
 carCanvas.height = window.innerHeight;
 
 const miniMapCanvas = document.getElementById("miniMapCanvas");
-miniMapCanvas.width = 300;
-miniMapCanvas.height = 300;
+miniMapCanvas.width = RIGHT_PANEL_WIDTH;
+miniMapCanvas.height = RIGHT_PANEL_WIDTH;
+
+statistics.style.width = RIGHT_PANEL_WIDTH + "px";
+statistics.style.height = window.innerHeight - RIGHT_PANEL_WIDTH - 60 + "px";
 
 const carCtx = carCanvas.getContext("2d");
 
 const viewport = new Viewport(carCanvas, world.zoom, world.offset);
-const miniMap = new MiniMap(miniMapCanvas, world.graph, 300);
+const miniMap = new MiniMap(miniMapCanvas, world.graph, RIGHT_PANEL_WIDTH);
 
 const cars = generateCars(1, CONTROL_TYPE.KEYS).concat(
   generateCars(NUM_OF_CARS - 1, CONTROL_TYPE.AI)
@@ -18,10 +23,19 @@ const myCar = cars[0];
 if (localStorage.getItem("bestBrain")) {
   for (let i = 0; i < cars.length; i++) {
     cars[i].brain = JSON.parse(localStorage.getItem("bestBrain"));
-    if (i != 0) {
+    if (i > 1) {
       NeuralNetwork.mutate(cars[i].brain, 0.1);
     }
   }
+}
+
+for (let ii = 0; ii < cars.length; ii++) {
+  const div = document.createElement("div");
+  div.id = "stat_" + ii;
+  div.innerText = ii;
+  div.style.color = cars[ii].color;
+  div.classList.add("stat");
+  statistics.appendChild(div);
 }
 
 let roadBorders = [];
@@ -89,13 +103,13 @@ function updateCarProgress(car) {
 
       if (s.equals(carSeg)) {
         const proj = s.projectPoint(car);
-        proj.point.draw(carCtx);
+        // proj.point.draw(carCtx);
         const firstPartOfSegment = new Segment(s.p1, proj.point);
-        firstPartOfSegment.draw(carCtx, { color: "red", width: 5 });
+        // firstPartOfSegment.draw(carCtx, { color: "red", width: 5 });
         car.progress += firstPartOfSegment.length();
         break;
       } else {
-        s.draw(carCtx, { color: "red", width: 5 });
+        // s.draw(carCtx, { color: "red", width: 5 });
         car.progress += s.length();
       }
     }
@@ -108,7 +122,7 @@ function updateCarProgress(car) {
       car.progress = 1;
       car.finishTime = frameCount;
     }
-    console.log(car.progress);
+    // console.log(car.progress);
   }
 }
 
@@ -130,7 +144,22 @@ function animate() {
   world.draw(carCtx, viewPoint, false);
   miniMap.update(viewPoint);
 
-  updateCarProgress(myCar);
+  for (let ii = 0; ii < cars.length; ii++) {
+    updateCarProgress(cars[ii]);
+  }
+
+  cars.sort((a, b) => b.progress - a.progress);
+
+  for (let ii = 0; ii < cars.length; ii++) {
+    const stat = document.getElementById("stat_" + ii);
+    stat.style.color = cars[ii].color;
+    stat.innerText = ii + 1 + ": " + (cars[ii].progress * 100).toFixed(1) + "%";
+    stat.style.backgroundColor =
+      cars[ii].type == CONTROL_TYPE.AI ? "black" : "white";
+    if (cars[ii].finishTime) {
+      stat.innerText += " (" + cars[ii].finishTime / 60 + ")";
+    }
+  }
 
   frameCount++;
   requestAnimationFrame(animate);
