@@ -87,6 +87,7 @@ function generateCars(N, type = CONTROL_TYPE.AI) {
       3,
       color
     );
+    car.name = type == CONTROL_TYPE.AI ? "AI_" + i : "ME";
     car.load(carInfo);
     cars.push(car);
   }
@@ -153,11 +154,16 @@ function animate() {
   for (let ii = 0; ii < cars.length; ii++) {
     const stat = document.getElementById("stat_" + ii);
     stat.style.color = cars[ii].color;
-    stat.innerText = ii + 1 + ": " + (cars[ii].progress * 100).toFixed(1) + "%";
+    // stat.innerText = ii + 1 + ": " + (cars[ii].progress * 100).toFixed(1) + "%";
+    stat.innerText =
+      ii + 1 + ": " + cars[ii].name + (cars[ii].damaged ? "💀" : "");
     stat.style.backgroundColor =
       cars[ii].type == CONTROL_TYPE.AI ? "black" : "white";
     if (cars[ii].finishTime) {
-      stat.innerText += " (" + cars[ii].finishTime / 60 + ")";
+      stat.innerHtml +=
+        "<span style='float:right;'>" +
+        (cars[ii].finishTime / 60).toFixed(1) +
+        "s </span>";
     }
   }
 
