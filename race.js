@@ -48,7 +48,8 @@ if (target) {
 }
 
 let frameCount = 0;
-
+let started = false;
+startCounter();
 animate();
 
 function save() {
@@ -95,6 +96,24 @@ function generateCars(N, type = CONTROL_TYPE.AI) {
   return cars;
 }
 
+function startCounter() {
+  counter.innerText = "3";
+  setTimeout(() => {
+    counter.innerText = "2";
+    setTimeout(() => {
+      counter.innerText = "1";
+      setTimeout(() => {
+        counter.innerText = "GO!";
+        setTimeout(() => {
+          counter.innerText = "";
+          started = true;
+          frameCount = 0;
+        }, 300);
+      }, 1000);
+    }, 1000);
+  }, 1000);
+}
+
 function updateCarProgress(car) {
   if (!car.finishTime) {
     car.progress = 0;
@@ -128,8 +147,10 @@ function updateCarProgress(car) {
 }
 
 function animate() {
-  for (let i = 0; i < cars.length; i++) {
-    cars[i].update(roadBorders, []);
+  if (started) {
+    for (let i = 0; i < cars.length; i++) {
+      cars[i].update(roadBorders, []);
+    }
   }
 
   world.cars = cars;
