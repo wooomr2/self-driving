@@ -41,7 +41,7 @@ for (let ii = 0; ii < cars.length; ii++) {
 let roadBorders = [];
 const target = world.markings.find((m) => m instanceof Target);
 if (target) {
-  world.generateCorridor(myCar, target.center);
+  world.generateCorridor(myCar, target.center, true);
   roadBorders = world.corridor.borders.map((s) => [s.p1, s.p2]);
 } else {
   roadBorders = world.roadBorders.map((s) => [s.p1, s.p2]);
@@ -181,7 +181,7 @@ function animate() {
     stat.style.backgroundColor =
       cars[ii].type == CONTROL_TYPE.AI ? "black" : "white";
     if (cars[ii].finishTime) {
-      stat.innerHtml +=
+      stat.innerHTML +=
         "<span style='float:right;'>" +
         (cars[ii].finishTime / 60).toFixed(1) +
         "s </span>";

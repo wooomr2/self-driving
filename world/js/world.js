@@ -70,7 +70,7 @@ class World {
     this.laneGuides.push(...this.#generateLaneGuides());
   }
 
-  generateCorridor(start, end) {
+  generateCorridor(start, end, extendEnd = false) {
     const startSeg = getNearestSegment(start, this.graph.segments);
     const endSeg = getNearestSegment(end, this.graph.segments);
 
@@ -103,9 +103,24 @@ class World {
       segs.push(new Segment(path[ii - 1], path[ii]));
     }
 
+    if (extendEnd) {
+      const lastSeg = segs[segs.length - 1];
+      const lastSegDir = lastSeg.directionVector();
+      segs.push(
+        new Segment(
+          lastSeg.p2,
+          add(lastSeg.p2, scale(lastSegDir, this.roadWidth))
+        )
+      );
+    }
+
     const tmpEnvelopes = segs.map(
       (s) => new Envelope(s, this.roadWidth, this.roadRoundness)
     );
+
+    if (extendEnd) {
+      segs.pop(); // 마지막에 추가한 보조 segment 제거
+    }
 
     const segments = Polygon.union(tmpEnvelopes.map((e) => e.poly));
 
