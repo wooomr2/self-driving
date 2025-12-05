@@ -42,7 +42,7 @@ class Camera {
      */
     const c = cross(subtract(p1, this), subtract(p, this));
     const x = (Math.sign(c) * distance(p, p1)) / distance(this, p1);
-    const y = -this.z / distance(this, p1);
+    const y = (p.z - this.z) / distance(this, p1);
 
     const cx = ctx.canvas.width / 2;
     const cy = ctx.canvas.height / 2;
@@ -73,8 +73,33 @@ class Camera {
     return filteredPolys;
   }
 
+  #extrude(polys, height = 10) {
+    const extrudedPolys = [];
+    for (const poly of polys) {
+      const ceiling = new Polygon(
+        poly.points.map((p) => new Point(p.x, p.y, -height))
+      );
+
+      const sides = [];
+      for (let ii = 0; ii < poly.points.length; ii++) {
+        sides.push(
+          new Polygon([
+            poly.points[ii],
+            poly.points[(ii + 1) % poly.points.length],
+            ceiling.points[(ii + 1) % ceiling.points.length],
+            ceiling.points[ii],
+          ])
+        );
+      }
+      extrudedPolys.push(...sides, ceiling);
+    }
+    return extrudedPolys;
+  }
+
   render(ctx, world) {
-    const polys = this.#filter(world.buildings.map((b) => b.base));
+    const polys = this.#extrude(
+      this.#filter(world.buildings.map((b) => b.base))
+    , 200);
 
     const projPolys = polys.map(
       (poly) => new Polygon(poly.points.map((p) => this.#projectPoint(ctx, p)))
