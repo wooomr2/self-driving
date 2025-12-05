@@ -72,6 +72,9 @@ class Car {
       this.damaged = this.#assessDamage(roadBorders, traffic);
       if (this.damaged) {
         this.speed = 0;
+        if (this.type == CONTROL_TYPE.KEYS) {
+          explode();
+        }
       }
     }
 

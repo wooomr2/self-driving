@@ -98,16 +98,16 @@ function generateCars(N, type = CONTROL_TYPE.AI) {
 
 function startCounter() {
   counter.innerText = "3";
-  beep(400)
+  beep(400);
   setTimeout(() => {
     counter.innerText = "2";
-    beep(400)
+    beep(400);
     setTimeout(() => {
       counter.innerText = "1";
-      beep(400)
+      beep(400);
       setTimeout(() => {
         counter.innerText = "GO!";
-        beep(700)
+        beep(700);
         setTimeout(() => {
           counter.innerText = "";
           started = true;
@@ -146,6 +146,9 @@ function updateCarProgress(car) {
     if (car.progress >= 1) {
       car.progress = 1;
       car.finishTime = frameCount;
+      if (car == myCar) {
+        toDaa();
+      }
     }
     // console.log(car.progress);
   }

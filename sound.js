@@ -1,55 +1,16 @@
-// const ctx = myCanvas.getContext("2d");
-// let analyzer = null;
-// let engine = null;
-// window.addEventListener("click", () => {
-//   engine = new Engine();
+function toDaa() {
+  beep(400, "sawtooth");
+  setTimeout(() => beep(600, "sawtooth"), 200);
+}
 
-//   /*
-//         beep(400);
-//         setTimeout(() => {
-//           beep(400);
-//           setTimeout(() => {
-//             beep(400);
-//             setTimeout(() => {
-//               beep(400);
-//             }, 1000);
-//           }, 1000);
-//         }, 1000);
-//         */
-// });
-
-// animate();
-
-// function animate() {
-//   ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-
-//   if (analyzer) {
-//     const data = new Uint8Array(analyzer.fftSize);
-//     analyzer.getByteTimeDomainData(data);
-
-//     ctx.beginPath();
-//     for (let i = 0; i < data.length; i++) {
-//       const x = (myCanvas.width * i) / data.length;
-//       const y = data[i];
-//       if (i == 0) {
-//         ctx.moveTo(x, y);
-//       } else {
-//         ctx.lineTo(x, y);
-//       }
-//     }
-
-//     ctx.stroke();
-//   }
-//   requestAnimationFrame(animate);
-// }
-
-function beep(freequency) {
+function beep(freequency, waveType = "sine") {
   const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
   const osc = audioContext.createOscillator();
   const envelope = audioContext.createGain();
 
   osc.frequency.setValueAtTime(freequency, 0);
+  osc.type = waveType;
   osc.connect(envelope);
   osc.start();
   osc.stop(0.4);
@@ -60,10 +21,27 @@ function beep(freequency) {
   // envelope.gain.exponentialRampToValueAtTime(1, 0.1);
   // envelope.gain.exponentialRampToValueAtTime(0.1, 0.4);
   envelope.connect(audioContext.destination);
+}
 
-  analyzer = audioContext.createAnalyser();
-  analyzer.fftSize = 2 ** 15;
-  envelope.connect(analyzer);
+function explode() {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+  const numOscillators = 10;
+
+  for (let ii = 0; ii < numOscillators; ii++) {
+    const osc = audioContext.createOscillator();
+    const envelope = audioContext.createGain();
+
+    osc.frequency.setValueAtTime(100 + Math.random() * 200, 0);
+    osc.connect(envelope);
+    osc.start();
+    osc.stop(1);
+
+    envelope.gain.value = 0;
+    envelope.gain.linearRampToValueAtTime(1, 0.1);
+    envelope.gain.linearRampToValueAtTime(0, 0.4);
+    envelope.connect(audioContext.destination);
+  }
 }
 
 class Engine {
@@ -91,10 +69,6 @@ class Engine {
 
     this.volume = masterGain.gain;
     this.frequency = osc.frequency;
-
-    // analyzer = audioContext.createAnalyser();
-    // analyzer.fftSize = 2 ** 15;
-    // masterGain.connect(analyzer);
   }
 
   setVolume(percent) {
