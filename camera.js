@@ -97,9 +97,21 @@ class Camera {
   }
 
   render(ctx, world) {
-    const polys = this.#extrude(
-      this.#filter(world.buildings.map((b) => b.base))
-    , 200);
+    const buildingPolys = this.#extrude(
+      this.#filter(world.buildings.map((b) => b.base)),
+      200
+    );
+
+    const carPolys = this.#extrude(
+      this.#filter(
+        world.cars.map(
+          (c) => new Polygon(c.polygon.map((p) => new Point(p.x, p.y)))
+        )
+      ),
+      10
+    );
+
+    const polys = [...buildingPolys, ...carPolys];
 
     const projPolys = polys.map(
       (poly) => new Polygon(poly.points.map((p) => this.#projectPoint(ctx, p)))
