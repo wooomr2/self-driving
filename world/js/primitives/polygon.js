@@ -42,7 +42,7 @@ class Polygon {
     }
   }
 
-  static break(poly1, poly2) {
+  static break(poly1, poly2, markIntersections = false) {
     const segs1 = poly1.segments;
     const segs2 = poly2.segments;
     for (let i = 0; i < segs1.length; i++) {
@@ -56,6 +56,9 @@ class Polygon {
 
         if (intersect && intersect.offset != 1 && intersect.offset != 0) {
           const point = new Point(intersect.x, intersect.y);
+          if (markIntersections) {
+            point.intersection = true;
+          }
 
           // polygon1의 각 segment들을 intersect로 나누고 새로운 segment를 추가
           {
@@ -92,6 +95,10 @@ class Polygon {
       }
     }
     return false;
+  }
+
+  containsPoly(poly) {
+    return poly.points.filter((p) => this.containsPoint(p)).length > 0;
   }
 
   containsSegment(seg) {

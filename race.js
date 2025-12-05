@@ -1,8 +1,14 @@
 const RIGHT_PANEL_WIDTH = 300;
 
+document.body.style.flexDirection = "column";
+
 const carCanvas = document.getElementById("carCanvas");
 carCanvas.width = window.innerWidth;
-carCanvas.height = window.innerHeight;
+carCanvas.height = window.innerHeight / 2;
+
+const cameraCanvas = document.getElementById("cameraCanvas");
+cameraCanvas.width = window.innerWidth;
+cameraCanvas.height = window.innerHeight / 2;
 
 const miniMapCanvas = document.getElementById("miniMapCanvas");
 miniMapCanvas.width = RIGHT_PANEL_WIDTH;
@@ -12,6 +18,7 @@ statistics.style.width = RIGHT_PANEL_WIDTH + "px";
 statistics.style.height = window.innerHeight - RIGHT_PANEL_WIDTH - 60 + "px";
 
 const carCtx = carCanvas.getContext("2d");
+const cameraCtx = cameraCanvas.getContext("2d");
 
 const viewport = new Viewport(carCanvas, world.zoom, world.offset);
 const miniMap = new MiniMap(miniMapCanvas, world.graph, RIGHT_PANEL_WIDTH);
@@ -200,6 +207,7 @@ function animate() {
 
   camera.move(myCar);
   camera.draw(carCtx);
+  camera.render(cameraCtx, world);
 
   frameCount++;
   requestAnimationFrame(animate);

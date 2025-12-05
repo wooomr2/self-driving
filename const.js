@@ -1,4 +1,4 @@
-const NUM_OF_CARS = 100;
+const NUM_OF_CARS = 10;
 
 const CONTROL_TYPE = {
   AI: "AI",

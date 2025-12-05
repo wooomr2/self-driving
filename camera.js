@@ -1,5 +1,5 @@
 class Camera {
-  constructor({ x, y, angle }, range = 100) {
+  constructor({ x, y, angle }, range = 1000) {
     this.range = range;
     this.move({ x, y, angle });
   }
@@ -23,6 +23,72 @@ class Camera {
       this.y - this.range * Math.cos(this.angle + Math.PI / 4)
     );
     this.poly = new Polygon([this.center, this.left, this.right]);
+  }
+
+  #projectPoint(ctx, p) {
+    const seg = new Segment(this.center, this.tip);
+    const { point: p1 } = seg.projectPoint(p);
+    /**
+     *   p1 --------- p
+     *   |
+     *   |
+     *   |  x
+     *    ----
+     * 1 |
+     *   . c
+     *
+     *   p1p / p1c = x/1
+     *
+     */
+    const c = cross(subtract(p1, this), subtract(p, this));
+    const x = (Math.sign(c) * distance(p, p1)) / distance(this, p1);
+    const y = -this.z / distance(this, p1);
+
+    const cx = ctx.canvas.width / 2;
+    const cy = ctx.canvas.height / 2;
+    const scaler = Math.max(cx, cy);
+
+    return new Point(cx + x * scaler, cy + y * scaler);
+  }
+
+  #filter(polys) {
+    const filteredPolys = [];
+    for (const poly of polys) {
+      if (!this.poly.containsPoly(poly)) {
+        continue;
+      }
+      if (poly.intersectsPoly(this.poly)) {
+        const copy1 = new Polygon(poly.points);
+        const copy2 = new Polygon(this.poly.points);
+        Polygon.break(copy1, copy2, true);
+        const points = copy1.segments.map((s) => s.p1);
+        const filteredPoints = points.filter(
+          (p) => p.intersection || this.poly.containsPoint(p)
+        );
+        filteredPolys.push(new Polygon(filteredPoints));
+      } else {
+        filteredPolys.push(poly);
+      }
+    }
+    return filteredPolys;
+  }
+
+  render(ctx, world) {
+    const polys = this.#filter(world.buildings.map((b) => b.base));
+
+    const projPolys = polys.map(
+      (poly) => new Polygon(poly.points.map((p) => this.#projectPoint(ctx, p)))
+    );
+
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+    for (const poly of projPolys) {
+      poly.draw(ctx);
+    }
+
+    for (const poly of polys) {
+      poly.draw(carCtx);
+    }
   }
 
   draw(ctx) {
