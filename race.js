@@ -20,6 +20,8 @@ const cars = generateCars(1, CONTROL_TYPE.KEYS).concat(
   generateCars(NUM_OF_CARS - 1, CONTROL_TYPE.AI)
 );
 const myCar = cars[0];
+const camera = new Camera(myCar);
+
 if (localStorage.getItem("bestBrain")) {
   for (let i = 0; i < cars.length; i++) {
     cars[i].brain = JSON.parse(localStorage.getItem("bestBrain"));
@@ -48,7 +50,7 @@ if (target) {
 }
 
 let frameCount = 0;
-let started = false;
+let started = true;
 startCounter();
 animate();
 
@@ -195,6 +197,9 @@ function animate() {
         "s </span>";
     }
   }
+
+  camera.move(myCar);
+  camera.draw(carCtx);
 
   frameCount++;
   requestAnimationFrame(animate);
