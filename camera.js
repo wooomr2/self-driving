@@ -2,10 +2,32 @@ class Camera {
   constructor({ x, y, angle }, range = 1000, distanceBehind = 150) {
     this.range = range;
     this.distanceBehind = distanceBehind;
-    this.move({ x, y, angle });
+    this.moveSimple({ x, y, angle });
   }
 
   move({ x, y, angle }) {
+    const t = 1;
+    this.x = lerp(this.x, x + this.distanceBehind * Math.sin(angle), t);
+    this.y = lerp(this.y, y + this.distanceBehind * Math.cos(angle), t);
+    this.z = -40;
+    this.angle = lerp(this.angle, angle, t);
+    this.center = new Point(this.x, this.y);
+    this.tip = new Point(
+      this.x - this.range * Math.sin(this.angle),
+      this.y - this.range * Math.cos(this.angle)
+    );
+    this.left = new Point(
+      this.x - this.range * Math.sin(this.angle - Math.PI / 4),
+      this.y - this.range * Math.cos(this.angle - Math.PI / 4)
+    );
+    this.right = new Point(
+      this.x - this.range * Math.sin(this.angle + Math.PI / 4),
+      this.y - this.range * Math.cos(this.angle + Math.PI / 4)
+    );
+    this.poly = new Polygon([this.center, this.left, this.right]);
+  }
+
+  moveSimple({ x, y, angle }) {
     this.x = x + this.distanceBehind * Math.sin(angle);
     this.y = y + this.distanceBehind * Math.cos(angle);
     this.z = -40;
@@ -107,16 +129,28 @@ class Camera {
       10
     );
 
-    const carPolys = this.#extrude(
-      this.#filter(
-        world.cars.map(
-          (c) => new Polygon(c.polygon.map((p) => new Point(p.x, p.y)))
-        )
-      ),
-      10
-    );
+    let polys = [];
+    if (SHOW_OTHER_CARS) {
+      const carPolys = this.#extrude(
+        this.#filter(
+          world.cars.map(
+            (c) => new Polygon(c.polygon.map((p) => new Point(p.x, p.y)))
+          )
+        ),
+        10
+      );
 
-    const polys = [...buildingPolys, ...carPolys, ...roadPolys];
+      polys = [...buildingPolys, ...carPolys, ...roadPolys];
+    } else {
+      const bestCarPoly = this.#extrude(
+        this.#filter([
+          new Polygon(world.bestCar.polygon.map((p) => new Point(p.x, p.y))),
+        ]),
+        10
+      );
+
+      polys = [...buildingPolys, ...bestCarPoly, ...roadPolys];
+    }
 
     return polys;
   }

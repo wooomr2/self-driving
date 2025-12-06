@@ -4,11 +4,11 @@ document.body.style.flexDirection = "column";
 
 const carCanvas = document.getElementById("carCanvas");
 carCanvas.width = window.innerWidth;
-carCanvas.height = window.innerHeight / 2;
+carCanvas.height = IS_ONLY_3D_RACE_MODE ? 0 : window.innerHeight / 2
 
 const cameraCanvas = document.getElementById("cameraCanvas");
 cameraCanvas.width = window.innerWidth;
-cameraCanvas.height = window.innerHeight / 2;
+cameraCanvas.height = IS_ONLY_3D_RACE_MODE ? window.innerHeight : window.innerHeight / 2;
 
 const miniMapCanvas = document.getElementById("miniMapCanvas");
 miniMapCanvas.width = RIGHT_PANEL_WIDTH;
@@ -57,7 +57,7 @@ if (target) {
 }
 
 let frameCount = 0;
-let started = true;
+let started = false;
 startCounter();
 animate();
 
@@ -179,8 +179,9 @@ function animate() {
   viewport.reset();
   // (-1)만큼 offset을 scale:: 마우스 드래그 반대방향으로 viewport를 이동시키는 패닝 효과를 주기 위함
   const viewPoint = scale(viewport.getOffset(), -1);
-
-  world.draw(carCtx, viewPoint, false);
+  if (!IS_ONLY_3D_RACE_MODE) {
+    world.draw(carCtx, viewPoint, false);
+  }
   miniMap.update(viewPoint);
 
   for (let ii = 0; ii < cars.length; ii++) {
