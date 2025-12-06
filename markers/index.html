@@ -13,12 +13,22 @@
     <body>
       <!-- <video id="myVideo"></video> -->
       <canvas id="myCanvas"></canvas>
+      <script src="markerDetector.js"></script>
       <script>
         const myVideo = document.createElement("video");
         const ctx = myCanvas.getContext("2d");
+        const markerDetector = new MarkerDetector();
 
         const loop = () => {
           ctx.drawImage(myVideo, 0, 0, myCanvas.width, myCanvas.height);
+          const imgData = ctx.getImageData(
+            0,
+            0,
+            myCanvas.width,
+            myCanvas.height
+          );
+          markerDetector.detect(imgData);
+          // debugger;
           requestAnimationFrame(loop);
         };
 
