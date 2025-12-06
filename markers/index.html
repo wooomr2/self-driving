@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Marker Detector</title>
+    <style>
+      video {
+        border: 2px solid;
+      }
+      canvas {
+        border: 2px solid blue;
+      }
+    </style>
+    <body>
+      <!-- <video id="myVideo"></video> -->
+      <canvas id="myCanvas"></canvas>
+      <script>
+        const myVideo = document.createElement("video");
+        const ctx = myCanvas.getContext("2d");
+
+        const loop = () => {
+          ctx.drawImage(myVideo, 0, 0, myCanvas.width, myCanvas.height);
+          requestAnimationFrame(loop);
+        };
+
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then((rowData) => {
+            myVideo.srcObject = rowData;
+            myVideo.play();
+            myVideo.onloadeddata = () => {
+              myCanvas.width = myVideo.videoWidth;
+              myCanvas.height = myVideo.videoHeight;
+              loop();
+            };
+          })
+          .catch((err) => {
+            alert(err);
+          });
+      </script>
+    </body>
+  </head>
+</html>
