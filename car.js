@@ -158,13 +158,17 @@ class Car {
     }
 
     if (this.speed !== 0) {
-      // 후진 시 회전방향을 반대로
-      const flip = this.speed > 0 ? 1 : -1;
-      if (this.controls.left) {
-        this.angle += 0.03 * flip;
-      }
-      if (this.controls.right) {
-        this.angle -= 0.03 * flip;
+      if (this.controls.tilt) {
+        this.angle = -this.controls.tilt * 0.03;
+      } else {
+        // 후진 시 회전방향을 반대로
+        const flip = this.speed > 0 ? 1 : -1;
+        if (this.controls.left) {
+          this.angle += 0.03 * flip;
+        }
+        if (this.controls.right) {
+          this.angle -= 0.03 * flip;
+        }
       }
     }
 
