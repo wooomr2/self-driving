@@ -6,12 +6,10 @@
 </head>
 <body>
   <canvas id="carCanvas"></canvas>
-  <canvas
-    id="cameraCanvas"
-    style="top: 50%; left: 50%; position: absolute"
-  ></canvas>
-  <canvas id="miniMapCanvas" class="miniMap" style="display: none"></canvas>
-  <div id="statistics" style="display: none"></div>
+  <canvas id="cameraCanvas"></canvas>
+  <canvas id="ironManCanvas"></canvas>
+  <canvas id="miniMapCanvas" class="miniMap"></canvas>
+  <div id="statistics"></div>
   <div id="counter"></div>
 
   <script src="world/js/const.js"></script>
@@ -51,7 +49,6 @@
   <script src="const.js"></script>
   <script src="utils.js"></script>
   <script src="miniMap.js"></script>
-  <script src="phoneControls.js"></script>
   <script src="camera.js"></script>
   <script src="sound.js"></script>
   <script src="visualizer.js"></script>
@@ -60,7 +57,11 @@
   <script src="controls.js"></script>
   <script src="car.js"></script>
   <script src="race.js"></script>
+  <script src="markerDetector.js"></script>
+  <script src="cameraControls.js"></script>
+
   <script>
-    myCar.controls = new PhoneControls(cameraCanvas);
+    const controls = new CameraControls(ironManCanvas);
+    myCar.controls = controls;
   </script>
 </body>

@@ -1,4 +1,4 @@
-const IS_ONLY_3D_RACE_MODE = false
+const IS_ONLY_3D_RACE_MODE = true
 const SHOW_OTHER_CARS = true
 
 const NUM_OF_CARS = 10;

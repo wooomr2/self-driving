@@ -71,3 +71,12 @@ button:hover {
   color: white;
   text-shadow: 2px 2px 4px #000000;
 }
+
+#ironManCanvas {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 300px;
+  border-radius: 10px;
+  opacity: 50%;
+}
