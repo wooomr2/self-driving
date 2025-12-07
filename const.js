@@ -1,4 +1,6 @@
-const NUM_OF_CARS = 100;
+const IS_ONLY_3D_RACE_MODE = false
+
+const NUM_OF_CARS = 10;
 
 const CONTROL_TYPE = {
   AI: "AI",
@@ -19,3 +21,4 @@ const RADIUS_RATIO = {
   OUTPUT: 0.6,
   BIAS: 0.8,
 };
+

@@ -14,6 +14,7 @@ button {
   margin: 2px;
   cursor: pointer;
 }
+
 button:hover {
   background-color: blue;
 }
@@ -27,10 +28,59 @@ button:hover {
   background: #2a5;
 }
 
+#cameraCanvas {
+  background-image: linear-gradient(rgb(185, 219, 245), white);
+}
+
 #networkCanvas {
   background: black;
 }
 
 #miniMapCanvas {
   background: black;
+}
+
+.miniMap {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  border-radius: 50%;
+  opacity: 0.5;
+}
+
+#statistics {
+  background: black;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  border-radius: 10px;
+  opacity: 0.5;
+  overflow: hidden;
+}
+
+.stat {
+  font-size: xx-large;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 10px;
+}
+
+#counter {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 40vmin;
+  font-family: Arial;
+  opacity: 50%;
+  color: white;
+  text-shadow: 2px 2px 4px #000000;
+}
+
+#ironManCanvas {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 300px;
+  border-radius: 10px;
+  opacity: 50%;
 }

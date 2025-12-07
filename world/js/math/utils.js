@@ -44,6 +44,10 @@ function dot(p1, p2) {
   return p1.x * p2.x + p1.y * p2.y;
 }
 
+function cross(p1, p2) {
+  return p1.x * p2.y - p1.y * p2.x;
+}
+
 function add(p1, p2) {
   return new Point(p1.x + p2.x, p1.y + p2.y);
 }
@@ -122,6 +126,35 @@ function getIntersection(A, B, C, D) {
   }
 
   return null;
+}
+
+function polysIntersect(poly1, poly2) {
+  for (let i = 0; i < poly1.length; i++) {
+    for (let j = 0; j < poly2.length; j++) {
+      // poly의 lastpoint의 경우 mod 연산을 통해 첫번째 point와 연산
+      const touch = getIntersection(
+        poly1[i],
+        poly1[(i + 1) % poly1.length],
+        poly2[j],
+        poly2[(j + 1) % poly2.length]
+      );
+
+      if (touch) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function getRGBA(value) {
+  const A = Math.abs(value);
+  const R = value < 0 ? 0 : 255;
+  const G = R;
+  const B = value > 0 ? 0 : 255;
+
+  return `rgba(${R},${G},${B},${A})`;
 }
 
 function getRandomColor() {

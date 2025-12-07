@@ -11,7 +11,7 @@
     <div id="controls">
       <button onclick="dispose()">🗑️</button>
       <button onclick="save()">💾</button>
-      <label for="fileInput" class="file-input-label">
+      <!-- <label for="fileInput" class="file-input-label">
         📂
         <input
           type="file"
@@ -19,7 +19,7 @@
           accept=".world"
           onchange="load(event)"
         />
-      </label>
+      </label> -->
       <button onclick="openOsmPanel()">🗺️</button>
       &nbsp;
       <button id="graphBtn" onclick="setMode('graph')">🌐</button>
@@ -49,7 +49,7 @@
 
     <script src="js/const.js"></script>
     <script src="js/world.js"></script>
-    <script src="js/viewPort.js"></script>
+    <script src="js/viewport.js"></script>
     <script src="js/markings/marking.js"></script>
     <script src="js/markings/start.js"></script>
     <script src="js/markings/stop.js"></script>
@@ -76,15 +76,19 @@
     <script src="js/primitives/segment.js"></script>
     <script src="js/primitives/polygon.js"></script>
     <script src="js/primitives/envelope.js"></script>
+
+    <!-- <script src="saves/big.world"></script> -->
+    <script src="saves/big_with_target.world"></script>
+    <!-- <script src="saves/small.world"></script> -->
     <script>
       myCanvas.width = 600;
       myCanvas.height = 600;
 
       const ctx = myCanvas.getContext("2d");
 
-      const worldStr = localStorage.getItem("world");
-      const worldInfo = worldStr ? JSON.parse(worldStr) : null;
-      let world = worldInfo ? World.load(worldInfo) : new World(new Graph());
+      // const worldStr = localStorage.getItem("world");
+      // const worldInfo = worldStr ? JSON.parse(worldStr) : null;
+      // let world = worldInfo ? World.load(worldInfo) : new World(new Graph());
 
       const graph = world.graph;
       const viewport = new Viewport(myCanvas, world.zoom, world.offset);
@@ -120,7 +124,8 @@
       function animate() {
         viewport.reset();
         if (graph.hash() != oldGraphHash) {
-          world.generate();
+          // :: world 다시그리고싶으면 주석 풀기
+          // world.generate();
           oldGraphHash = graph.hash();
         }
 
@@ -152,7 +157,9 @@
         element.setAttribute(
           "href",
           "data:application/json;charset=utf-8," +
-            encodeURIComponent(JSON.stringify(world))
+            encodeURIComponent(
+              "const world = World.load(" + JSON.stringify(world) + ");"
+            )
         );
         const fileName = "name.world";
         element.setAttribute("download", fileName);
@@ -173,7 +180,11 @@
 
         reader.onload = (evt) => {
           const fileContent = evt.target.result;
-          const jsonData = JSON.parse(fileContent);
+          const jsonString = fileContent.substring(
+            fileCOntent.indexOf("(") + 1,
+            fileCOntent.lastIndexOf(")")
+          );
+          const jsonData = JSON.parse(jsonString);
           world = World.load(jsonData);
           localStorage.setItem("world", JSON.stringify(world));
           location.reload();

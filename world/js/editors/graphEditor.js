@@ -35,6 +35,18 @@ class GraphEditor {
     this.canvas.addEventListener("mousemove", this.mouseMove);
     this.canvas.addEventListener("mouseup", this.mouseUp);
     this.canvas.addEventListener("contextmenu", this.contextMenu);
+
+    window.addEventListener("keydown", (evt) => {
+      if (evt.key == "s") {
+        this.start = this.mouse;
+      }
+      if (evt.key == "e") {
+        this.end = this.mouse;
+      }
+      if (this.start && this.end) {
+        world.generateCorridor(this.start, this.end);
+      }
+    });
   }
 
   #removeEventListeners() {
@@ -94,6 +106,17 @@ class GraphEditor {
       new Segment(this.selected, intent).draw(this.ctx, { dash: [3, 3] });
       this.selected.draw(this.ctx, { outline: true });
     }
+
+    // if (this.start && this.end) {
+    //   const path = this.graph.getShortestPath(this.start, this.end);
+
+    //   for (const point of path) {
+    //     point.draw(this.ctx, { size: 50, color: "blue" });
+    //     if (point.prev) {
+    //       new Segment(point, point.prev).draw(this.ctx, { width: 20 });
+    //     }
+    //   }
+    // }
   }
 
   dispose() {

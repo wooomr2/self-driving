@@ -70,6 +70,63 @@ class World {
     this.laneGuides.push(...this.#generateLaneGuides());
   }
 
+  generateCorridor(start, end, extendEnd = false) {
+    const startSeg = getNearestSegment(start, this.graph.segments);
+    const endSeg = getNearestSegment(end, this.graph.segments);
+
+    const { point: projStart } = startSeg.projectPoint(start);
+    const { point: projEnd } = endSeg.projectPoint(end);
+
+    this.graph.points.push(projStart);
+    this.graph.points.push(projEnd);
+
+    const tmpSegs = [
+      new Segment(startSeg.p1, projStart),
+      new Segment(projStart, startSeg.p2),
+      new Segment(endSeg.p1, projEnd),
+      new Segment(projEnd, endSeg.p2),
+    ];
+
+    if (startSeg.equals(endSeg)) {
+      tmpSegs.push(new Segment(projStart, projEnd));
+    }
+
+    this.graph.segments = this.graph.segments.concat(tmpSegs);
+
+    const path = this.graph.getShortestPath(projStart, projEnd);
+
+    this.graph.removePoint(projStart);
+    this.graph.removePoint(projEnd);
+
+    const segs = [];
+    for (let ii = 1; ii < path.length; ii++) {
+      segs.push(new Segment(path[ii - 1], path[ii]));
+    }
+
+    if (extendEnd) {
+      const lastSeg = segs[segs.length - 1];
+      const lastSegDir = lastSeg.directionVector();
+      segs.push(
+        new Segment(
+          lastSeg.p2,
+          add(lastSeg.p2, scale(lastSegDir, this.roadWidth))
+        )
+      );
+    }
+
+    const tmpEnvelopes = segs.map(
+      (s) => new Envelope(s, this.roadWidth, this.roadRoundness)
+    );
+
+    if (extendEnd) {
+      segs.pop(); // 마지막에 추가한 보조 segment 제거
+    }
+
+    const segments = Polygon.union(tmpEnvelopes.map((e) => e.poly));
+
+    this.corridor = { borders: segments, skeleton: segs };
+  }
+
   #generateLaneGuides() {
     const tmpEnvelopes = [];
     for (const seg of this.graph.segments) {
@@ -310,6 +367,12 @@ class World {
 
     for (const seg of this.roadBorders) {
       seg.draw(ctx, { color: COLOR.WHITE, width: 4 });
+    }
+
+    if (this.corridor) {
+      for (const seg of this.corridor.borders) {
+        seg.draw(ctx, { color: COLOR.RED, width: 4 });
+      }
     }
 
     ctx.globalAlpha = 0.2;

@@ -13,6 +13,8 @@ class Car {
     this.y = y;
     this.width = width;
     this.height = height;
+    this.color = color;
+    this.type = controlType;
 
     this.speed = 0;
     this.acceleration = 0.2;
@@ -49,6 +51,19 @@ class Car {
       maskCtx.globalCompositeOperation = "destination-atop";
       maskCtx.drawImage(this.img, 0, 0, this.width, this.height);
     };
+
+    this.update([], []);
+  }
+
+  load(info) {
+    this.brain = info.brain;
+    this.maxSpeed = info.maxSpeed;
+    this.friction = info.friction;
+    this.acceleration = info.acceleration;
+    this.sensor.rayCount = info.sensor.rayCount;
+    this.sensor.raySpead = info.sensor.raySpead;
+    this.sensor.rayLength = info.sensor.rayLength;
+    this.sensor.rayOffset = info.sensor.rayOffset;
   }
 
   update(roadBorders, traffic) {
@@ -57,12 +72,19 @@ class Car {
       this.fitness += this.speed;
       this.polygon = this.#createPolygon();
       this.damaged = this.#assessDamage(roadBorders, traffic);
+      if (this.damaged) {
+        this.speed = 0;
+        if (this.type == CONTROL_TYPE.KEYS) {
+          explode();
+        }
+      }
     }
+
     if (this.sensor) {
       this.sensor.update(roadBorders, traffic);
-      const offsets = this.sensor.readings.map((s) =>
-        s == null ? 0 : 1 - s.offset
-      );
+      const offsets = this.sensor.readings
+        .map((s) => (s == null ? 0 : 1 - s.offset))
+        .concat([this.speed / this.maxSpeed]);
       const outputs = NeuralNetwork.feedForward(offsets, this.brain);
 
       if (this.useBrain) {
@@ -72,10 +94,16 @@ class Car {
         this.controls.reverse = outputs[3];
       }
     }
+
+    if (this.engine) {
+      const percent = Math.abs(this.speed / this.maxSpeed);
+      this.engine.setVolume(percent);
+      this.engine.setPitch(percent);
+    }
   }
 
   draw(ctx, drawSensor = false) {
-    if (this.sensor && drawSensor) {
+    if (this.sensor && drawSensor && this.useBrain) {
       this.sensor.draw(ctx);
     }
 
@@ -130,13 +158,17 @@ class Car {
     }
 
     if (this.speed !== 0) {
-      // 후진 시 회전방향을 반대로
-      const flip = this.speed > 0 ? 1 : -1;
-      if (this.controls.left) {
-        this.angle += 0.03 * flip;
-      }
-      if (this.controls.right) {
-        this.angle -= 0.03 * flip;
+      if (this.controls.tilt) {
+        this.angle = -this.controls.tilt * 0.03;
+      } else {
+        // 후진 시 회전방향을 반대로
+        const flip = this.speed > 0 ? 1 : -1;
+        if (this.controls.left) {
+          this.angle += 0.03 * flip;
+        }
+        if (this.controls.right) {
+          this.angle -= 0.03 * flip;
+        }
       }
     }
 
@@ -145,6 +177,7 @@ class Car {
   }
 
   #assessDamage(roadBorders, traffic) {
+    // return false;
     for (let i = 0; i < roadBorders.length; i++) {
       if (polysIntersect(this.polygon, roadBorders[i])) {
         return true;

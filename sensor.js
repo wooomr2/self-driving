@@ -4,6 +4,7 @@ class Sensor {
     this.rayCount = 5;
     this.rayLength = 150;
     this.raySpread = Math.PI / 4;
+    this.rayOffset = 0;
 
     this.rays = [];
     /** 판독값 */
@@ -93,7 +94,9 @@ class Sensor {
           this.raySpread / 2,
           -this.raySpread / 2,
           this.rayCount == 1 ? 0.5 : i / (this.rayCount - 1)
-        ) + this.car.angle; // 차의 이동 각도만큼 변화량 추가
+        ) +
+        this.car.angle + // 차의 이동 각도만큼 변화량 추가
+        this.rayOffset;
 
       const start = new Point(this.car.x, this.car.y);
       const end = new Point(
