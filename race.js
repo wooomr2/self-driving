@@ -4,11 +4,13 @@ document.body.style.flexDirection = "column";
 
 const carCanvas = document.getElementById("carCanvas");
 carCanvas.width = window.innerWidth;
-carCanvas.height = IS_ONLY_3D_RACE_MODE ? 0 : window.innerHeight / 2
+carCanvas.height = IS_ONLY_3D_RACE_MODE ? 0 : window.innerHeight / 2;
 
 const cameraCanvas = document.getElementById("cameraCanvas");
 cameraCanvas.width = window.innerWidth;
-cameraCanvas.height = IS_ONLY_3D_RACE_MODE ? window.innerHeight : window.innerHeight / 2;
+cameraCanvas.height = IS_ONLY_3D_RACE_MODE
+  ? window.innerHeight
+  : window.innerHeight / 2;
 
 const miniMapCanvas = document.getElementById("miniMapCanvas");
 miniMapCanvas.width = RIGHT_PANEL_WIDTH;
@@ -21,11 +23,11 @@ const carCtx = carCanvas.getContext("2d");
 const cameraCtx = cameraCanvas.getContext("2d");
 
 const viewport = new Viewport(carCanvas, world.zoom, world.offset);
-const miniMap = new MiniMap(miniMapCanvas, world.graph, RIGHT_PANEL_WIDTH);
 
 const cars = generateCars(1, CONTROL_TYPE.KEYS).concat(
   generateCars(NUM_OF_CARS - 1, CONTROL_TYPE.AI)
 );
+
 const myCar = cars[0];
 const camera = new Camera(myCar);
 
@@ -55,6 +57,15 @@ if (target) {
 } else {
   roadBorders = world.roadBorders.map((s) => [s.p1, s.p2]);
 }
+
+const miniMapGraph = new Graph([], world.corridor.skeleton);
+const miniMap = new MiniMap(
+  miniMapCanvas,
+  // world.graph,
+  miniMapGraph,
+  RIGHT_PANEL_WIDTH,
+  cars
+);
 
 let frameCount = 0;
 let started = false;
@@ -163,10 +174,41 @@ function updateCarProgress(car) {
   }
 }
 
+function handleCollisionWithRoadBorder(car) {
+  const seg = getNearestSegment(car, world.corridor.skeleton);
+
+  const correctors = car.polygon.map((p) => {
+    const proj = seg.projectPoint(p);
+    const projPoint =
+      proj.offset < 0 ? seg.p1 : proj.offset > 1 ? seg.p2 : proj.point;
+    return subtract(projPoint, p);
+  });
+
+  const maxMagnitude = Math.max(...correctors.map((p) => magnitude(p)));
+  const corrector = correctors.find((p) => magnitude(p) == maxMagnitude);
+  const normCorrector = normalize(corrector);
+
+  if (corrector == correctors[0] || corrector == correctors[2]) {
+    car.angle += 0.1;
+  } else {
+    car.angle -= 0.1;
+  }
+
+  car.x += normCorrector.x;
+  car.y += normCorrector.y;
+  car.damaged = false;
+}
+
 function animate() {
   if (started) {
     for (let i = 0; i < cars.length; i++) {
       cars[i].update(roadBorders, []);
+    }
+  }
+
+  for (const car of cars) {
+    if (car.damaged) {
+      handleCollisionWithRoadBorder(car);
     }
   }
 
@@ -183,6 +225,7 @@ function animate() {
     world.draw(carCtx, viewPoint, false);
   }
   miniMap.update(viewPoint);
+  miniMapCanvas.style.trnasform = "rotate(" + myCar.angle + "rad)";
 
   for (let ii = 0; ii < cars.length; ii++) {
     updateCarProgress(cars[ii]);
@@ -192,7 +235,8 @@ function animate() {
 
   for (let ii = 0; ii < cars.length; ii++) {
     const stat = document.getElementById("stat_" + ii);
-    stat.style.color = cars[ii].color;
+    stat.style.color =
+      cars[ii].type == CONTROL_TYPE.AI ? "white" : cars[ii].color;
     // stat.innerText = ii + 1 + ": " + (cars[ii].progress * 100).toFixed(1) + "%";
     stat.innerText =
       ii + 1 + ": " + cars[ii].name + (cars[ii].damaged ? "💀" : "");
